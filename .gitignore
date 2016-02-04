@@ -1,0 +1,16 @@
+# temporary build and jar dirs
+build-artifacts/
+build*.log
+lib_managed/
+.gradle/
+.xbuildfailure
+PULSE_OUTPUT/
+tomcat.8080/
+
+# release notes
+RNDeltaChanges.txt.UPDATE
+ReleaseNotes.txt.UPDATE
+
+# git related
+.git-history.log
+update-git.log

@@ -1,0 +1,130 @@
+/*
+ * Copyright (c) 2010-2015 Pivotal Software, Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You
+ * may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * permissions and limitations under the License. See accompanying
+ * LICENSE file.
+ */
+apply plugin: 'wrapper'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+  jcenter()
+  maven { url 'http://repo.spring.io/release' }
+  maven { url 'http://repo.spring.io/milestone' }
+  maven { url 'http://repo.spring.io/snapshot' }
+  maven { url 'http://repo.spring.io/libs-release' }
+  maven { url 'http://repo.spring.io/ext-release-local' }
+  maven { url 'https://dl.bintray.com/big-data/maven' }
+}
+
+ext {
+}
+
+configurations {
+  provided {
+    description 'a dependency that is provided externally at runtime'
+    visible true
+  }
+  selenium {
+    description 'specific to obtain selenium-server and dependencies'
+    visible true
+  }
+}
+
+dependencies {
+  provided 'org.apache.commons:com.springsource.org.apache.commons.beanutils:1.8.3'
+  provided 'org.apache.commons:com.springsource.org.apache.commons.collections:3.2.1'
+  provided 'org.apache.commons:com.springsource.org.apache.commons.digester:1.8.1'
+  provided 'org.apache.commons:com.springsource.org.apache.commons.logging:1.1.1'
+  provided 'commons-lang:commons-lang:2.6'
+  provided 'org.json:json:20151123'
+  provided 'org.springframework:spring-core:3.2.16.RELEASE'
+  provided 'org.springframework:spring-web:3.2.16.RELEASE'
+  provided 'org.springframework:spring-beans:3.2.16.RELEASE'
+  provided 'org.springframework:spring-context:3.2.16.RELEASE'
+  provided 'org.springframework:spring-aspects:3.2.16.RELEASE'
+  provided 'org.springframework:spring-expression:3.2.16.RELEASE'
+  provided 'org.springframework:spring-aop:3.2.16.RELEASE'
+  provided 'org.springframework:spring-webmvc:3.2.16.RELEASE'
+  provided 'org.springframework:spring-tx:3.2.16.RELEASE'
+  provided 'org.springframework:spring-jdbc:3.2.16.RELEASE'
+  provided 'org.springframework.security:spring-security-core:3.1.7.RELEASE'
+  provided 'org.springframework.security:spring-security-config:3.1.7.RELEASE'
+  provided 'org.springframework.security:spring-security-web:3.1.7.RELEASE'
+  provided 'org.springframework.ldap:spring-ldap-core:1.3.2.RELEASE'
+  provided 'org.springframework.security:spring-security-ldap:3.1.7.RELEASE'
+  provided 'com.google.guava:guava:18.0'
+
+  testCompile 'org.apache.tomcat.embed:tomcat-embed-core:7.0.50'
+  testCompile 'org.apache.tomcat.embed:tomcat-embed-jasper:7.0.50'
+  testCompile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.50'
+  testCompile 'junit:junit:4.11'
+
+  selenium 'org.seleniumhq.selenium:selenium-firefox-driver:2.48.2'
+  selenium 'org.seleniumhq.selenium:selenium-api:2.48.2'
+  selenium 'org.seleniumhq.selenium:selenium-remote-driver:2.48.2'
+  selenium 'org.seleniumhq.selenium:selenium-support:2.48.2'
+  selenium 'com.google.code.gson:gson:2.3.1'
+  selenium 'org.apache.commons:commons-exec:1.3'
+}
+
+eclipse {
+  classpath {
+    defaultOutputDir = file('build-eclipse')
+    plusConfigurations += [ configurations.provided ]
+    plusConfigurations += [ configurations.selenium ]
+  }
+  // Several files have UTF-8 encoding and Eclipse running on Windows
+  // will have trouble unless we tell it to use UTF-8 encoding.
+  // This setting needs to go into the core.resources.prefs file,
+  // which the JDT script isn't set up to configure
+  eclipseJdt << {
+    File f = file('.settings/org.eclipse.core.resources.prefs')
+    f.write('eclipse.preferences.version=1\n')
+    f.append('encoding/<project>=utf-8')
+  }
+}
+
+idea {
+  module {
+    scopes.PROVIDED.plus += [ configurations.provided ]
+    scopes.COMPILE.plus += [ configurations.selenium ]
+  }
+}
+
+sourceSets {
+  main.compileClasspath += configurations.provided
+  main.runtimeClasspath -= configurations.provided
+  test.compileClasspath += configurations.provided
+  test.runtimeClasspath += configurations.provided
+
+  main.compileClasspath -= configurations.selenium
+  main.runtimeClasspath -= configurations.selenium
+  test.compileClasspath += configurations.selenium
+  test.runtimeClasspath += configurations.selenium
+}
+
+javadoc.classpath += configurations.provided
+javadoc.classpath += configurations.selenium
+
+task copyDependenciesSelenium(type: Copy) {
+  into "${projectDir}/lib_managed/selenium"
+  from configurations.selenium
+}
+
+task copyDependencies(type: Copy, dependsOn: 'copyDependenciesSelenium') {
+  into "${projectDir}/lib_managed"
+  from configurations.testRuntime + configurations.provided
+}

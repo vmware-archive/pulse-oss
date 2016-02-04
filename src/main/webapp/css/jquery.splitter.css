@@ -1,0 +1,59 @@
+/*!
+ * StyleSheet for JQuery Spliter Plugin
+ * Copyright (C) 2010 Jakub Jankiewicz <http://jcubic.pl>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+.spliter_panel {
+  position: relative;
+}
+.spliter_panel .vspliter {
+    background:#0f1c25 url(../images/ver-spiltter-dot.png) no-repeat center center;
+    cursor: col-resize;
+    z-index:7;
+    width: 8px;
+	
+	
+}
+
+.spliter_panel .hspliter {
+    background:#0f1c25 url(../images/hor-spiltter-dot.png) no-repeat center center;
+    cursor: row-resize;
+    z-index: 7;
+    height: 8px;
+	*height: auto;
+}
+.spliter_panel .vspliter, .spliter_panel .left_panel, .spliter_panel .right_panel,
+.spliter_panel .hspliter, .spliter_panel .top_panel, .spliter_panel .bottom_panel {
+    position: absolute;
+   /* overflow: auto;*/
+}
+.spliter_panel .vspliter, .spliter_panel .left_panel, .spliter_panel .right_panel {
+  height: 100%;
+}
+.spliter_panel .hspliter, .spliter_panel .top_panel, .spliter_panel .bottom_panel {
+  width: 100%;
+}
+.spliter_panel .top_panel, .spliter_panel .left_panel, .spliter_panel .vspliter {
+   top: 0%;
+}
+.spliter_panel .top_panel, .spliter_panel .bottom_panel, .spliter_panel .left_panel, .spliter_panel .hspliter {
+   left: 0%;
+}
+.spliter_panel .bottom_panel {
+   bottom: 0%;
+}
+.spliter_panel .right_panel {
+   right: 0%;
+}

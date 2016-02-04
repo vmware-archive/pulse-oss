@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2010-2015 Pivotal Software, Inc. All rights reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License"); you
+ may not use this file except in compliance with the License. You
+ may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ permissions and limitations under the License. See accompanying
+ LICENSE file.
+-->
+<project name="osplatform">
+  <!-- determine machine and os, and if this is a 32 bit only or 64 bit only platform -->
+  <condition property="gf.os" value="sol">
+    <os name="SunOs"/>
+  </condition>
+  <condition property="gf.os" value="linux">
+    <os name="Linux"/>
+  </condition>
+  <if><isset property="only64"/><then>
+    <condition property="only32" value="true">
+      <os name="Linux"/>
+    </condition>
+  </then></if>
+  <condition property="gf.os" value="mac">
+    <os family="mac"/>
+  </condition>
+  <condition property="only32" value="true">
+    <os family="mac"/>
+  </condition>
+  <condition property="gf.os" value="win">
+    <os family="windows"/>
+  </condition>
+  <if><isset property="only64"/><then>
+    <condition property="only32" value="true">
+      <os family="windows"/>
+    </condition>
+  </then></if>
+  <condition property="gf.os" value="aix">
+    <os name="AIX"/>
+  </condition>
+  <if><isset property="only64"/><then>
+    <condition property="only32" value="true">
+      <os name="AIX"/>
+    </condition>
+  </then></if>
+
+  <condition property="isSolaris">
+    <os name="SunOs"/>
+  </condition>
+  <condition property="isMac">
+    <os family="mac"/>
+  </condition>
+  <condition property="isAIX">
+    <os name="AIX"/>
+  </condition>
+  <condition property="isLinux">
+    <os name="Linux"/>
+  </condition>
+  <condition property="isWindows">
+    <os family="windows"/>
+  </condition>
+
+  <if><isset property="only32"/><then>
+    <property name="singleModel" value="true"/>
+    <property name="do32bit" value="true"/>
+  </then></if>
+
+  <if><isset property="only64"/><then>
+    <property name="singleModel" value="true"/>
+    <property name="do64bit" value="true"/>
+  </then></if>
+
+  <if><isset property="singleModel"/><then>
+    <property name="do32bit" value="true"/>
+    <property name="do64bit" value="true"/>
+  </then></if>
+</project>
