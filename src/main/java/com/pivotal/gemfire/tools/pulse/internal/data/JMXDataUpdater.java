@@ -504,17 +504,23 @@ public class JMXDataUpdater implements IClusterUpdater, NotificationListener {
 
             if (PulseConstants.PRODUCT_NAME_GEMFIREXD
                 .equalsIgnoreCase(PulseController.getPulseProductSupport())) {
-              // For GemFireXD
-              for (ObjectName tableMBean : tableMBeans) {
-                String regNameFromTable = StringUtils
-                    .getRegionNameFromTableName(tableMBean
-                        .getKeyProperty("table"));
-                String regionName = memMBean.getKeyProperty("name");
-                if (regNameFromTable.equals(regionName)) {
-                  updateMemberRegion(memMBean);
-                  break;
+
+                if(tableMBeans.size() > 0 ){
+                    // For GemFireXD
+                    for (ObjectName tableMBean : tableMBeans) {
+                        String regNameFromTable = StringUtils
+                                .getRegionNameFromTableName(tableMBean
+                                        .getKeyProperty("table"));
+                        String regionName = memMBean.getKeyProperty("name");
+                        if (regNameFromTable.equals(regionName)) {
+                            updateMemberRegion(memMBean);
+                            break;
+                        }
+                    }
+                }else{
+                    cleanMemberRegion(memMBean);
                 }
-              }
+
             } else {
               // For GemFire
               updateMemberRegion(memMBean);
@@ -543,7 +549,7 @@ public class JMXDataUpdater implements IClusterUpdater, NotificationListener {
 
       // Cluster Query Statistics
       Set<ObjectName> statementObjectNames = this.mbs.queryNames(
-          this.MBEAN_OBJECT_NAME_STATEMENT_DISTRIBUTED, null);
+              this.MBEAN_OBJECT_NAME_STATEMENT_DISTRIBUTED, null);
       LOGGER.info("statementObjectNames = " + statementObjectNames);
       for (ObjectName stmtObjectName : statementObjectNames) {
         LOGGER.info("stmtObjectName = " + stmtObjectName);
@@ -1912,6 +1918,27 @@ public class JMXDataUpdater implements IClusterUpdater, NotificationListener {
       return Double.valueOf(0);
     }
   }
+
+    private void cleanMemberRegion(ObjectName mbeanName) throws IOException {
+        try {
+            String memberName = mbeanName
+                    .getKeyProperty(PulseConstants.MBEAN_KEY_PROPERTY_MEMBER);
+
+            Cluster.Member member = cluster.getMembersHMap().get(memberName);
+
+            for (Iterator<String> it = cluster.getDeletedRegions().iterator(); it
+                    .hasNext(); ) {
+                String deletedRegion = it.next();
+                if (member.getMemberRegions().get(deletedRegion) != null) {
+                    member.getMemberRegions().remove(deletedRegion);
+                }
+                member.setTotalRegionCount(member.getMemberRegions().size());
+            }
+
+        } catch (Exception infe) {
+            LOGGER.warning(infe);
+        }
+    }
 
   /**
    * function used to get attribute values of Member Region and map them to
