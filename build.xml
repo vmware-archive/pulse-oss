@@ -79,7 +79,7 @@ Command Line Defines:
   <property name="osbuild.dir" value="${build.dir}/${gf.os}"/>
   <property name="app.name"      value="pulse"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="pulse.version"   value="1.4.1"/>
+  <property name="pulse.version"   value="1.5.0"/>
   <property name="target.dir"    value="${osbuild.dir}/target"/>
   <property name="dist.dir"     value="${osbuild.dir}/dist"/>
   <property name="src.dir"      value="${basedir}/src/main/java"/>
