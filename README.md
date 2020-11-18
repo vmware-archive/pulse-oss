@@ -1,4 +1,4 @@
-## Introduction
+<h1> VMware has ended active development of this project, this repository will no longer be updated.</h1><br>## Introduction
 
 GemFire Pulse is a monitoring application that provides a web-based dashboard for monitoring vital, real-time health and performance of GemFire/GemFireXD clusters. The statistics monitored include region puts/gets, memory, CPU, disk space, uptime, connections, critical notifications.
 
